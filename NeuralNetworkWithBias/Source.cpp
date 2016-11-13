@@ -10,6 +10,7 @@ using namespace std;
 
 class TrainingData
 {
+	
 public:
 	TrainingData(const string filename);
 	bool isEof(void) { return m_trainingDataFile.eof(); }
@@ -18,6 +19,15 @@ public:
 	// Returns the number of input values read from the file:
 	unsigned getNextInputs(vector<double> &inputVals);
 	unsigned getTargetOutputs(vector<double> &targetOutputVals);
+
+	std::string RemoveLastWhiteSpace(char a[], int length)
+	{
+		if (a[length - 1] == ' ')
+		{
+			a[length - 1] = '\0';
+		}
+		return std::string(a);
+	}
 
 private:
 	ifstream m_trainingDataFile;
@@ -29,7 +39,7 @@ void TrainingData::getTopology(vector<unsigned> &topology)
 	string label;
 
 	getline(m_trainingDataFile, line);
-	stringstream ss(line);
+	stringstream ss(RemoveLastWhiteSpace((char *)line.c_str(), line.size()));
 	ss >> label;
 	if (this->isEof() || label.compare("topology:") != 0) {
 		abort();
@@ -123,9 +133,8 @@ private:
 	double m_gradient;
 };
 
-// 0.5 and 0.5 are great at 2500 train samples (98 percent accuracy)
-// 
-double Neuron::eta = 0.5;    // overall net learning rate, [0.0..1.0]
+// 0.2 and 0.5 are great at 2500 train samples (98% assurance)
+double Neuron::eta = 0.2;    // overall net learning rate, [0.0..1.0]
 double Neuron::alpha = 0.5;   // momentum, multiplier of last deltaWeight, [0.0..1.0]
 
 
@@ -344,10 +353,9 @@ void showVectorVals(string label, vector<double> &v)
 	cout << endl;
 }
 
-
 int main()
 {
-	TrainingData trainData("C:/Users/Laimonas/Artificial Intelligence/Projects/NeuralNetwork/NeuralNetwork/Data.txt");
+	TrainingData trainData("C:/Users/Laimonas/Artificial Intelligence/Projects/NeuralNetworkWithBias/NeuralNetworkWithBias/Data.txt");
 
 	// e.g., { 3, 2, 1 }
 	vector<unsigned> topology;
