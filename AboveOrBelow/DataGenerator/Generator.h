@@ -6,7 +6,7 @@
 
 #define AREA_X 1 
 #define AREA_Y 1 
-#define NUM_OF_POINTS 100
+#define NUM_OF_POINTS 10000
 #define PATH "./Data.txt"
 
 using std::vector;
@@ -38,7 +38,7 @@ inline int Generate(int mode, const std::vector<unsigned int> &topology)
 	}
 
 	writer.ResetFile();
-	writer.WriteValues(data, topology);
+	writer.WriteValues(data);
 
 	return 0;
 }
@@ -74,8 +74,8 @@ inline bool GenerateDataForSinFunction(double x, double y)
 
 inline bool GenerateDataForLinearFunction(double x, double y)
 {
-	// our function is : f(x) = 2x
-	double functionY = 2 * x;
+	// our function is : f(x) = x
+	double functionY = x;
 	if (functionY > y)
 		return false;
 	return true;

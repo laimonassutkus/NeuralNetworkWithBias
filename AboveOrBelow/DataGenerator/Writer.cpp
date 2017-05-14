@@ -9,8 +9,7 @@ Writer::~Writer()
 {
 }
 
-void Writer::WriteValues(const std::vector<std::tuple<double, double, bool>> &data,
-	const std::vector<unsigned int> &topology) const
+void Writer::WriteValues(const std::vector<std::tuple<double, double, bool>> &data) const
 {
 	std::ofstream writer;
 	writer.open(path, std::ios_base::app);

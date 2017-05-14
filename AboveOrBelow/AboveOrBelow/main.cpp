@@ -20,7 +20,7 @@ int main()
 {
 	vector<unsigned> topology = {2, 1};
 
-	Generate(3, topology);
+	Generate(2, topology);
 	Net myNet(topology);
 
 	DataReader trainData("./Data.txt");
