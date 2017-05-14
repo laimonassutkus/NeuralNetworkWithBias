@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <math.h>
+#include <memory>
 
 #define _USE_MATH_DEFINES
 
@@ -8,6 +9,14 @@ unsigned
 window_width = 640,
 window_height = 480,
 padding = 20;
+
+float point_size = 10;
+
+enum DrawType
+{
+	FILLED,
+	HOLLOW
+};
 
 struct Point
 {
@@ -38,8 +47,30 @@ struct Color
 	}
 };
 
-void SDL_RenderCircle(SDL_Renderer *renderer, const Point & center, float radius);
-void draw_circle(SDL_Renderer *renderer, Point center, int radius, Color color);
+void SDL_RenderCircle(SDL_Renderer *renderer, Point center, float radius, Color color);
+void SDL_RenderFilledCircle(SDL_Renderer *renderer, Point center, float radius, Color color);
+void PlacePoint(DrawType type, Point point);
+
+void HandleUserEvent(SDL_Renderer* renderer, SDL_Event event)
+{
+	void *mode = event.user.data1;
+	void *data = event.user.data2;
+	if (mode != nullptr && data != nullptr)
+	{
+		switch (*static_cast<DrawType *>(mode))
+		{
+		case FILLED:
+			SDL_RenderFilledCircle(renderer, *static_cast<Point *>(data), 100, Color(100, 100, 100, 100));
+			break;
+		case HOLLOW:
+			SDL_RenderCircle(renderer, *static_cast<Point *>(data), 100, Color(100, 100, 100, 100));
+			break;
+		default:
+			break;
+		}
+					
+	}
+}
 
 int wWinMain(int, char**)
 {
@@ -79,17 +110,17 @@ int wWinMain(int, char**)
 		// Draw OX axis
 		SDL_RenderDrawLine(renderer, padding, window_height - padding, window_width - padding, window_height - padding);
 
-		SDL_RenderCircle(renderer, Point(100, 100), 100);
+		// Test
+		PlacePoint(FILLED, Point(200, 200));
 
-		draw_circle(renderer, Point(100, 100), 100, Color(0, 0, 0, 0));
-
-		SDL_RenderPresent(renderer);
-
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
+		while (SDL_PollEvent(&event)) 
+		{
+			if (event.type == SDL_QUIT)
 				done = SDL_TRUE;
-			}
+			else if (event.type == SDL_USEREVENT)
+				HandleUserEvent(renderer, event);
 		}
+		SDL_RenderPresent(renderer);
 	}
 
 	SDL_Quit();
@@ -97,8 +128,10 @@ int wWinMain(int, char**)
 	return 0;
 }
 
-void SDL_RenderCircle(SDL_Renderer *renderer, const Point & center, float radius)
+void SDL_RenderCircle(SDL_Renderer *renderer, Point center, float radius, Color color)
 {
+	SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
+
 	int sides = 2 * M_PI * radius / 2;
 
 	float d_a = 2 * M_PI / sides,
@@ -119,7 +152,7 @@ void SDL_RenderCircle(SDL_Renderer *renderer, const Point & center, float radius
 	}
 }
 
-void draw_circle(SDL_Renderer *renderer, Point center, int radius, Color color)
+void SDL_RenderFilledCircle(SDL_Renderer *renderer, Point center, float radius, Color color)
 {
 	SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
 	for (int w = 0; w < radius * 2; w++)
@@ -134,4 +167,17 @@ void draw_circle(SDL_Renderer *renderer, Point center, int radius, Color color)
 			}
 		}
 	}
+}
+
+void PlacePoint(DrawType type, Point point)
+{
+	SDL_Event userEvent;
+	SDL_memset(&userEvent, 0, sizeof(userEvent)); 
+	userEvent.type = SDL_USEREVENT;
+	userEvent.user.code = 12345;
+	userEvent.user.data1 = malloc(sizeof(type));
+	userEvent.user.data2 = malloc(sizeof(point));
+	memcpy(userEvent.user.data1, static_cast<void *>(&type), sizeof(type));
+	memcpy(userEvent.user.data2, static_cast<void *>(&point), sizeof(point));
+	SDL_PushEvent(&userEvent);
 }
