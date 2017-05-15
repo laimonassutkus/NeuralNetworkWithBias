@@ -3,10 +3,8 @@
 #include <tuple>
 #include <ctime>
 #include "Writer.h"
+#include "../DataVisualizer/paint.h"
 
-#define AREA_X 1 
-#define AREA_Y 1 
-#define NUM_OF_POINTS 10000
 #define PATH "./Data.txt"
 
 using std::vector;
@@ -19,6 +17,11 @@ inline void GenerateDataForXORGate(vector<tuple<double, double, bool>> &data);
 inline bool GenerateDataForLinearFunction(double x, double y);
 inline void GenerateDataForFunction(vector<tuple<double, double, bool>> &data, bool(*GetPositionIsAbove)(double, double));
 
+const WindowInfo winInfo = visualizer::GetWindowInfo();
+const int AREA_X = winInfo.window_width - 2 * winInfo.padding;
+const int AREA_Y = winInfo.window_height - 2 * winInfo.padding;
+const int NUM_OF_POINTS = 5000;
+
 inline int Generate(int mode, const std::vector<unsigned int> &topology)
 {
 	Writer writer(PATH);
@@ -28,7 +31,7 @@ inline int Generate(int mode, const std::vector<unsigned int> &topology)
 	switch (mode)
 	{
 	case 1:
-		GenerateDataForXORGate(data); break;
+		// GenerateDataForXORGate(data); break;
 	case 2:
 		GenerateDataForFunction(data, GenerateDataForLinearFunction); break;
 	case 3:
@@ -85,8 +88,8 @@ inline void GenerateDataForFunction(vector<tuple<double, double, bool>> &data, b
 {
 	for (int i = 0; i < NUM_OF_POINTS; i++)
 	{
-		double x = (static_cast<double>(rand()) / RAND_MAX) * AREA_X,
-			y = (static_cast<double>(rand()) / RAND_MAX) * AREA_Y;
+		double x = (static_cast<double>(rand()) / RAND_MAX) * AREA_X + winInfo.padding,
+			y = (static_cast<double>(rand()) / RAND_MAX) * AREA_Y + winInfo.padding;
 		bool isAbove = GetPositionIsAbove(x, y);
 		auto t = make_tuple(x, y, isAbove);
 

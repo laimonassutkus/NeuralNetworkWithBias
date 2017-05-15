@@ -1,6 +1,6 @@
 #pragma once
 
-namespace neuralNet
+namespace neuralnet
 {
 	struct Connection
 	{

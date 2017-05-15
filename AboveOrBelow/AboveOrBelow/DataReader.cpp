@@ -1,4 +1,5 @@
 #include "DataReader.h"
+#include <sstream>
 
 DataReader::DataReader(const string filename)
 {

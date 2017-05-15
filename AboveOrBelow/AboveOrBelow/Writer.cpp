@@ -1,4 +1,7 @@
 #include "Writer.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 Writer::Writer(std::string p)
 {

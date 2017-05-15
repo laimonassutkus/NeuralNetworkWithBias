@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="paint.cpp">
+    <ClCompile Include="BackPropNeuralNet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neuron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Color.h">
+    <ClInclude Include="BackPropNeuralNet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
+    <ClInclude Include="Connection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="paint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowInfo.h">
+    <ClInclude Include="Neuron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

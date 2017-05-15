@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{0308A54C-0E97-43B4-8CF2-41D98B11E47D}</ProjectGuid>
-    <RootNamespace>AboveOrBelow</RootNamespace>
+    <ProjectGuid>{5CF60945-0228-4850-8F13-AE72F1F411F9}</ProjectGuid>
+    <RootNamespace>NeuralNetwork</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -39,7 +39,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -69,31 +69,23 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Laimonas\Artificial Intelligence\Projects\GIT_SimpleNeuralNetworks\AboveOrBelow\DataVisualizer\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Laimonas\Artificial Intelligence\Projects\GIT_SimpleNeuralNetworks\AboveOrBelow\DataVisualizer\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>NeuralNetBackProp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <Link>
-      <SubSystem>NotSet</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -122,22 +114,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DataReader.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Writer.cpp" />
+    <ClCompile Include="BackPropNeuralNet.cpp" />
+    <ClCompile Include="Neuron.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataReader.h" />
-    <ClInclude Include="Generator.h" />
-    <ClInclude Include="Writer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataVisualizer\DataVisualizer.vcxproj">
-      <Project>{54b03924-afb5-4cdc-853b-80c7705cc039}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.vcxproj">
-      <Project>{5cf60945-0228-4850-8f13-ae72f1f411f9}</Project>
-    </ProjectReference>
+    <ClInclude Include="BackPropNeuralNet.h" />
+    <ClInclude Include="Connection.h" />
+    <ClInclude Include="Neuron.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

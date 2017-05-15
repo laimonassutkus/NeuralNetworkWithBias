@@ -1,10 +1,14 @@
-#include "BackPropNeuralNet.h"
 #include <string>
-#include "../DataGenerator/Generator.h"
+#include "Generator.h"
 #include "DataReader.h"
+#include <iostream>
+#include <ctime>
+#include "../DataVisualizer/paint.h"
+#include "../NeuralNetwork/BackPropNeuralNet.h"
+#include <future>
+#include <math.h>
 
 using namespace std;
-using namespace neuralNet;
 
 void showVectorVals(string label, vector<double> &v)
 {
@@ -16,12 +20,14 @@ void showVectorVals(string label, vector<double> &v)
 	cout << endl;
 }
 
-int main()
+int wmain()
 {
+	auto handle = std::async(std::launch::async, visualizer::run);
+
 	vector<unsigned> topology = {2, 1};
 
 	Generate(2, topology);
-	Net myNet(topology);
+	neuralnet::Net myNet(topology);
 
 	DataReader trainData("./Data.txt");
 	clock_t start;
@@ -39,8 +45,11 @@ int main()
 		if (trainData.getNextInputs(inputVals) != topology[0]) {
 			break;
 		}
+
 		showVectorVals(": Inputs:", inputVals);
-		myNet.feedForward(inputVals);
+
+		vector<double> temp = { inputVals.front() / AREA_X, inputVals.back() / AREA_Y };
+		myNet.feedForward(temp);
 
 		// Collect the net's actual output results:
 		myNet.getResults(resultVals);
@@ -50,6 +59,8 @@ int main()
 		trainData.getTargetOutputs(targetVals);
 		showVectorVals("Targets:", targetVals);
 		assert(targetVals.size() == topology.back());
+
+		visualizer::AddPoint(visualizer::Point(inputVals.front(), inputVals.back()), round(resultVals.front()) == targetVals.front());
 
 		myNet.backProp(targetVals);
 
@@ -62,4 +73,5 @@ int main()
 	cout << endl << "Done in " << duration << " seconds." << endl;
 
 	system("pause");
+	return 0;
 }
