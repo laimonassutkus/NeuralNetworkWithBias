@@ -32,7 +32,7 @@ namespace neuralnet
 
 		m_recentAverageError =
 			(m_recentAverageError * m_recentAverageSmoothingFactor + m_error)
-			/ (m_recentAverageSmoothingFactor + 10.0);
+			/ (m_recentAverageSmoothingFactor + 1.0);
 
 		// Calculate output layer gradients
 

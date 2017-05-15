@@ -2,8 +2,8 @@
 
 namespace neuralnet
 {
-	double Neuron::eta = 0.2;  
-	double Neuron::alpha = 0.5;  
+	double Neuron::eta = 0.1;    // overall net learning rate, [0.0..1.0]
+	double Neuron::alpha = 0.1;   // momentum, multiplier of last deltaWeight, [0.0..1.0]
 
 	void Neuron::updateInputWeights(Layer &prevLayer) const
 	{

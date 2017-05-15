@@ -24,7 +24,7 @@ int wmain()
 {
 	auto handle = std::async(std::launch::async, visualizer::run);
 
-	vector<unsigned> topology = {2, 1};
+	vector<unsigned> topology = {2, 2, 1};
 
 	Generate(2, topology);
 	neuralnet::Net myNet(topology);
