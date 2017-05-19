@@ -2,6 +2,7 @@
 #include <vector>
 #include <tuple>
 #include <ctime>
+#include <cmath>
 #include "Writer.h"
 #include "../DataVisualizer/paint.h"
 
@@ -12,17 +13,18 @@ using std::tuple;
 using std::exception;
 using std::make_tuple;
 
-inline bool GenerateDataForSinFunction(double x, double y);
-inline void GenerateDataForXORGate(vector<tuple<double, double, bool>> &data);
-inline bool GenerateDataForLinearFunction(double x, double y);
-inline void GenerateDataForFunction(vector<tuple<double, double, bool>> &data, bool(*GetPositionIsAbove)(double, double));
+inline double SinFunction(double x);
+inline double LinearFunction(double x);
+inline double QuadricFunction(double x);
+inline SDL_Point *GeneratePointsForFunction(double(*getY)(double));
+inline void GenerateDataForFunction(vector<tuple<double, double, bool>> &data, double(*GetPositionIsAbove)(double));
 
 const WindowInfo winInfo = visualizer::GetWindowInfo();
 const int AREA_X = winInfo.window_width - 2 * winInfo.padding;
 const int AREA_Y = winInfo.window_height - 2 * winInfo.padding;
-const int NUM_OF_POINTS = 5000;
+const int NUM_OF_POINTS = 10000;
 
-inline int Generate(int mode, const std::vector<unsigned int> &topology)
+inline int GenerateTrainData(int mode, const std::vector<unsigned int> &topology)
 {
 	Writer writer(PATH);
 	vector<tuple<double, double, bool>> data;
@@ -31,11 +33,11 @@ inline int Generate(int mode, const std::vector<unsigned int> &topology)
 	switch (mode)
 	{
 	case 1:
-		// GenerateDataForXORGate(data); break;
+		GenerateDataForFunction(data, LinearFunction); break;
 	case 2:
-		GenerateDataForFunction(data, GenerateDataForLinearFunction); break;
+		GenerateDataForFunction(data, SinFunction); break;
 	case 3:
-		GenerateDataForFunction(data, GenerateDataForSinFunction); break;
+		GenerateDataForFunction(data, QuadricFunction); break;
 	default:
 		throw exception("Wrong selection of generating method.");
 	}
@@ -46,51 +48,58 @@ inline int Generate(int mode, const std::vector<unsigned int> &topology)
 	return 0;
 }
 
-inline void GenerateDataForXORGate(vector<tuple<double, double, bool>> &data)
+inline SDL_Point *GeneratePoints(int mode)
 {
-	for (int i = 0; i < NUM_OF_POINTS; i++)
+	switch (mode)
 	{
-		double a = (static_cast<double>(rand()) / RAND_MAX) > 0.5 ? 1 : 0;
-		double b = (static_cast<double>(rand()) / RAND_MAX) > 0.5 ? 1 : 0;
-		double c;
-
-		if (a && b)
-			c = 0;
-		else if (!a && !b)
-			c = 0;
-		else
-			c = 1;
-
-		auto t = make_tuple(a, b, c);
-		data.push_back(t);
+	case 1:
+		return GeneratePointsForFunction(LinearFunction);
+	case 2:
+		return GeneratePointsForFunction(SinFunction);
+	case 3:
+		return GeneratePointsForFunction(QuadricFunction);
+	default: ;
+		return nullptr;
 	}
 }
 
-inline bool GenerateDataForSinFunction(double x, double y)
+inline double QuadricFunction(double x)
 {
-	// our function is : f(x) = sin(x);
-	double functionY = std::sin(x); 
-	if (functionY > y)
-		return false;
-	return true;
+	auto a = std::pow(x, 2) / 250 - 2.5 * x + 500;
+	return a;
 }
 
-inline bool GenerateDataForLinearFunction(double x, double y)
+inline double SinFunction(double x)
 {
-	// our function is : f(x) = x
-	double functionY = x;
-	if (functionY > y)
-		return false;
-	return true;
+	return std::sin(x) * 10;
 }
 
-inline void GenerateDataForFunction(vector<tuple<double, double, bool>> &data, bool (*GetPositionIsAbove)(double, double))
+inline double LinearFunction(double x)
+{
+	return x / 2;
+}
+
+inline SDL_Point *GeneratePointsForFunction(double(*getY)(double))
+{
+	SDL_Point *points = static_cast<SDL_Point *>(malloc(sizeof(SDL_Point) * winInfo.window_width));
+	for (auto i = 0; i < winInfo.window_width; ++i)
+	{
+		points[i].x = i + winInfo.padding;
+		points[i].y = getY(i) + winInfo.padding;
+	}
+	return points;
+}
+
+inline void GenerateDataForFunction(vector<tuple<double, double, bool>> &data, double(*getY)(double))
 {
 	for (int i = 0; i < NUM_OF_POINTS; i++)
 	{
 		double x = (static_cast<double>(rand()) / RAND_MAX) * AREA_X + winInfo.padding,
 			y = (static_cast<double>(rand()) / RAND_MAX) * AREA_Y + winInfo.padding;
-		bool isAbove = GetPositionIsAbove(x, y);
+
+		double yFromFunction = getY(x);
+		bool isAbove = yFromFunction > y;
+
 		auto t = make_tuple(x, y, isAbove);
 
 		data.push_back(t);

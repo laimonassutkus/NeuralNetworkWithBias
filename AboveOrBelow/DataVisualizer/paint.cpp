@@ -1,6 +1,7 @@
 #include "paint.h"
 #include <iostream>
 #include "WindowInfo.h"
+#include "../AboveOrBelow/Generator.h"
 
 namespace visualizer
 {
@@ -18,6 +19,7 @@ namespace visualizer
 	float point_size = 5;
 
 	points pointContainer;
+	SDL_Point *functionsPoints;
 
 
 	int run()
@@ -53,13 +55,19 @@ namespace visualizer
 			SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 
 			// Draw OY axis
-			SDL_RenderDrawLine(renderer, windowInfo.padding, windowInfo.padding, 
-				windowInfo.padding, windowInfo.window_height - windowInfo.padding);
+			SDL_RenderDrawLine(renderer, windowInfo.padding, 0, 
+				windowInfo.padding, windowInfo.window_height);
 
 			// Draw OX axis
-			SDL_RenderDrawLine(renderer, windowInfo.padding, windowInfo.window_height - windowInfo.padding, 
-				windowInfo.window_width - windowInfo.padding, windowInfo.window_height - windowInfo.padding);
+			SDL_RenderDrawLine(renderer, 0, windowInfo.padding, 
+				windowInfo.window_width, windowInfo.padding);
 
+			// Draw points that represent function
+			if (functionsPoints != nullptr)
+				for (int i = 0; i < AREA_X; ++i)
+					SDL_RenderFilledCircle(renderer, Point(functionsPoints[i].x, functionsPoints[i].y), 2, Color(100, 0, 255, 50));
+
+			// Draw randomly generated points
 			for (auto point : pointContainer)
 			{
 				bool isAbove = std::get<2>(point);
@@ -127,6 +135,12 @@ namespace visualizer
 		}
 	}
 
+	void DrawFunction(SDL_Point *points)
+	{
+		functionsPoints = points;
+	}
+
+	// BUG - use RegisterEvent
 	void AddPoint(Point point, bool isAbove)
 	{
 		auto t = std::make_tuple(point.x, point.y, isAbove);

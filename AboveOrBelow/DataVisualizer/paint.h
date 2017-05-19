@@ -16,6 +16,7 @@ namespace visualizer
 	void SDL_RenderFilledCircle(SDL_Renderer *renderer, Point center, float radius, Color color);
 	void AddPoint(Point point, bool isAbove);
 	void HandleUserEvent(SDL_Event event);
+	void DrawFunction(SDL_Point *points);
 	WindowInfo GetWindowInfo();
 	int run();
 }

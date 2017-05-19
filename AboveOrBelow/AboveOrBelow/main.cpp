@@ -2,11 +2,9 @@
 #include "Generator.h"
 #include "DataReader.h"
 #include <iostream>
-#include <ctime>
 #include "../DataVisualizer/paint.h"
 #include "../NeuralNetwork/BackPropNeuralNet.h"
 #include <future>
-#include <math.h>
 
 using namespace std;
 
@@ -20,13 +18,14 @@ void showVectorVals(string label, vector<double> &v)
 	cout << endl;
 }
 
-int wmain()
+int Calculate(vector<unsigned> topology)
 {
 	auto handle = std::async(std::launch::async, visualizer::run);
 
-	vector<unsigned> topology = {2, 2, 1};
+	GenerateTrainData(3, topology);
 
-	Generate(2, topology);
+	visualizer::DrawFunction(GeneratePoints(3));
+
 	neuralnet::Net myNet(topology);
 
 	DataReader trainData("./Data.txt");
@@ -73,5 +72,17 @@ int wmain()
 	cout << endl << "Done in " << duration << " seconds." << endl;
 
 	system("pause");
+	return 0;
+}
+
+int wmain()
+{
+	vector<unsigned> topology1 = {2, 2, 1};
+	vector<unsigned> topology2 = {2, 4, 4, 1};
+	vector<unsigned> topology3 = {2, 8, 8, 6, 4, 1};
+
+	Calculate(topology2);
+	// Calculate(topology2);
+	// Calculate(topology3);
 	return 0;
 }
